@@ -1,6 +1,6 @@
-" VIM Configuration - Vincent Jousse
-" Cancel the compatibility with Vi. Essential if you want
-" to enjoy the features of Vim
+"VIM Configuration 
+
+"Cancel the compatibility with Vi. Essential if you want to enjoy the features of Vim
 set nocompatible
 
 "Activate pathogen
@@ -8,6 +8,37 @@ call pathogen#infect()
 
 "Activate the NERDtree when launching vim
 autocmd vimenter * NERDTree
+
+"Switch to editor buffer when opening, instead of being focused on NERDTree
+autocmd VimEnter * wincmd p
+
+"Keep nerdtree plugin to the right
+let g:NERDTreeWinPos = "right"
+
+"Close VIM if NERDTree is the last opened buffer
+function! NERDTreeQuit()
+  redir => buffersoutput
+  silent buffers
+  redir END
+"                     1BufNo  2Mods.     3File           4LineNo
+  let pattern = '^\s*\(\d\+\)\(.....\) "\(.*\)"\s\+line \(\d\+\)$'
+  let windowfound = 0
+
+  for bline in split(buffersoutput, "\n")
+    let m = matchlist(bline, pattern)
+
+    if (len(m) > 0)
+      if (m[2] =~ '..a..')
+        let windowfound = 1
+      endif
+    endif
+  endfor
+
+  if (!windowfound)
+    quitall
+  endif
+endfunction
+autocmd WinEnter * call NERDTreeQuit()
 
 " -- Display
 set title                 " Update the title of your window or your terminal
@@ -47,20 +78,13 @@ filetype plugin on
 filetype indent on
 
 "Use the dar version of Solarized
+"colorscheme solarized " instead of VIM themes, we use terminal colors
 set background=dark
-colorscheme solarized
 set guifont=Monaco:h13
 set antialias
 
-"Disabling the directional keys
-map <up> <nop>
-map <down> <nop>
-map <left> <nop>
-map <right> <nop>
-imap <up> <nop>
-imap <down> <nop>
-imap <left> <nop>
-imap <right> <nop>
+" Color fix when using iTerm2
+set termguicolors
 
 "Press j twice in a row to exit insert mode
 :imap jj <Esc>

@@ -86,5 +86,8 @@ set antialias
 " Color fix when using iTerm2
 set termguicolors
 
+" Clear search highlights after 'Enter' or ':' or 'Backspace' key is pressed
+nnoremap <cr> :noh<CR><CR>:<backspace>
+
 "Press j twice in a row to exit insert mode
 :imap jj <Esc>
